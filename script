@@ -1,0 +1,56 @@
+import os
+import json
+
+def generate_metadata():
+    # Prompt the user for input
+    print("Welcome to the NFT Metadata Generator by Uzui!")
+    name = input("Enter the name of your NFT project: ")
+    description = input("Enter the description of your NFT project: ")
+    total = int(input("Enter the total number of NFTs in the collection: "))
+    start = int(input("Enter the starting number for metadata files (0 or 1, default is 0): ") or 0)
+
+    # Validate total NFTs input
+    if total <= 0:
+        print("Error: Total number of NFTs must be greater than 0")
+        return
+
+    # Validate start number input
+    if start not in [0, 1]:
+        print("Error: Starting number must be either 0 or 1")
+        return
+
+    # Create metadata directory
+    os.makedirs('metadata', exist_ok=True)
+    all_metadata = []
+
+    # Generate individual metadata files
+    for i in range(start, start + total):
+        metadata = {
+            "name": f"{name} #{i}",
+            "description": description,
+            "image": f"{i}.png",
+            "attributes": [
+                {
+                    "trait_type": "Sample",
+                    "value": "Sample"
+                }
+            ]
+        }
+
+        # Write individual metadata file
+        filename = os.path.join('metadata', f"{i}.json")
+        with open(filename, 'w') as f:
+            json.dump(metadata, f, indent=4)
+        
+        all_metadata.append(metadata)
+
+    # Write combined metadata file
+    combined_filename = os.path.join('metadata', 'all_metadata.json')
+    with open(combined_filename, 'w') as f:
+        json.dump(all_metadata, f, indent=4)
+
+    print(f"\nSuccessfully generated {total} metadata files in 'metadata' directory")
+    print(f"Combined metadata saved to 'metadata/all_metadata.json'")
+
+if __name__ == "__main__":
+    generate_metadata()
